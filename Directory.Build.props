@@ -1,0 +1,45 @@
+<Project>
+	<PropertyGroup Label="Product">
+		<Product>Bytes.OpenXml</Product>
+		<ProductName>$(Product)</ProductName>
+		<Company>ByVal Technologies India Private Limited</Company>
+		<Authors>Vinod Vetrivel</Authors>
+		<Description>Bytes OpenXml contains extension methods that ease handling Excel documents with OpenXML SDK.</Description>
+		<Copyright>© $([System.DateTime]::Now.ToString('yyyy')), $(Company)</Copyright>
+	</PropertyGroup>
+
+	<PropertyGroup Label="Version">
+		<VersionMajor>0</VersionMajor>
+		<VersionMinor>1</VersionMinor>
+		<VersionPatch>0</VersionPatch>
+		<VersionQuality></VersionQuality>
+		<VersionPrefix>$(VersionMajor).$(VersionMinor).$(VersionPatch)$(VersionQuality)</VersionPrefix>
+		<PackageReleaseNotes>First Version</PackageReleaseNotes>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+	</PropertyGroup>
+
+	<PropertyGroup Label="Code">
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+		<EnableNETAnalyzers>true</EnableNETAnalyzers>
+		<AnalysisMode>AllEnabledByDefault</AnalysisMode>
+	</PropertyGroup>
+
+	<PropertyGroup Label="Release" Condition="'$(Configuration)'=='Release'">
+		<DebugType>none</DebugType>
+		<DebugSymbols>false</DebugSymbols>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="../README.md" Pack="true" PackagePath="/" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Roslynator.Analyzers" Version="4.5.0">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+	</ItemGroup>
+</Project>
