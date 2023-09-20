@@ -1,16 +1,23 @@
 <Project>
-	<PropertyGroup Label="Product">
-		<Product>Bytes.OpenXml</Product>
+	<PropertyGroup Label="Package">
+		<Product>Bytes OpenXml</Product>
 		<ProductName>$(Product)</ProductName>
 		<Company>ByVal Technologies India Private Limited</Company>
 		<Authors>Vinod Vetrivel</Authors>
-		<Description>Bytes OpenXml contains extension methods that ease handling Excel documents with OpenXML SDK.</Description>
+		<Description>$(Product) contains extension methods that ease handling Excel documents with OpenXML SDK.</Description>
 		<Copyright>© $([System.DateTime]::Now.ToString('yyyy')), $(Company)</Copyright>
+		<Title>$(Product)</Title>
+		<PackageProjectUrl>https://github.com/byvaltech/Bytes.OpenXml</PackageProjectUrl>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<RepositoryUrl>https://github.com/byvaltech/Bytes.OpenXml</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageTags>OpenXML;Excel</PackageTags>
+		<PackageReleaseNotes>Initial version</PackageReleaseNotes>
 	</PropertyGroup>
 
 	<PropertyGroup Label="Version">
 		<VersionMajor>0</VersionMajor>
-		<VersionMinor>1</VersionMinor>
+		<VersionMinor>2</VersionMinor>
 		<VersionPatch>0</VersionPatch>
 		<VersionQuality></VersionQuality>
 		<VersionPrefix>$(VersionMajor).$(VersionMinor).$(VersionPatch)$(VersionQuality)</VersionPrefix>
@@ -19,7 +26,9 @@
 	</PropertyGroup>
 
 	<PropertyGroup Label="Code">
+		<NoWarn>CA1305;CA1307</NoWarn>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<WarningLevel>7</WarningLevel>
 		<EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
 		<EnableNETAnalyzers>true</EnableNETAnalyzers>
 		<AnalysisMode>AllEnabledByDefault</AnalysisMode>
@@ -33,7 +42,10 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<None Include="../README.md" Pack="true" PackagePath="/" />
+		<None Include="../README.md">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
 	</ItemGroup>
 
 	<ItemGroup>

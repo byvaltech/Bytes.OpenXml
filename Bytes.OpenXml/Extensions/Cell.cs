@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Globalization;
+using System.Text.RegularExpressions;
 
 namespace Bytes.OpenXml.Extensions;
 
@@ -31,5 +32,38 @@ public static class CellExtensions
         }
 
         return (uint)(columnNumber + 1);
+    }
+
+    /// <summary>
+    /// Get Row Index of the cell
+    /// </summary>
+    /// <param name="cell"></param>
+    public static uint GetRowIndex(this Cell cell)
+    {
+        if (cell == null)
+        {
+            throw new ArgumentNullException(nameof(cell));
+        }
+        var regex = new Regex(@"\d+");
+        var match = regex.Match(cell.CellReference);
+
+        return uint.Parse(match.Value, CultureInfo.InvariantCulture);
+    }
+
+    /// <summary>
+    /// Get Column name of the cell
+    /// </summary>
+    /// <param name="cell"></param>
+    public static string GetColumnName(this Cell cell)
+    {
+        if (cell == null)
+        {
+            throw new ArgumentNullException(nameof(cell));
+        }
+
+        var regex = new Regex("[A-Za-z]+");
+        var match = regex.Match(cell.CellReference);
+
+        return match.Value;
     }
 }

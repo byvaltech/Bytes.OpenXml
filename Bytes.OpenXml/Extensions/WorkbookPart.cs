@@ -10,8 +10,7 @@ public static class WorkbookPartExtensions
     /// </summary>
     /// <param name="workbookPart">An instance of <see cref="WorkbookPart"/>.</param>
     /// <param name="sheetName">Name of the sheet</param>
-    /// <returns></returns>
-    public static WorksheetPart GetWorksheetPartByName(this WorkbookPart workbookPart, string sheetName)
+    public static WorksheetPart GetWorksheetPart(this WorkbookPart workbookPart, string sheetName)
     {
         if (workbookPart == null)
         {
@@ -26,8 +25,29 @@ public static class WorkbookPartExtensions
         }
 
         var relationshipId = sheets.First().Id.Value;
-        var worksheetPart = (WorksheetPart)workbookPart.GetPartById(relationshipId);
+        return (WorksheetPart)workbookPart.GetPartById(relationshipId);
+    }
 
-        return worksheetPart;
+    /// <summary>
+    /// Get cell format for the given id
+    /// </summary>
+    /// <param name="workbookPart">An instance of <see cref="WorkbookPart"/></param>
+    /// <param name="numberFormatId">Number format ID</param>
+    /// <exception cref="ArgumentNullException"></exception>
+    public static uint GetCellFormat(this WorkbookPart workbookPart, uint numberFormatId)
+    {
+        if (workbookPart == null)
+        {
+            throw new ArgumentNullException(nameof(workbookPart));
+        }
+
+        var styleSheet = workbookPart.WorkbookStylesPart.Stylesheet;
+        var elements = styleSheet.CellFormats.Elements<CellFormat>().ToList();
+        var foundItem = elements.Find(e => e.NumberFormatId == numberFormatId);
+        if (foundItem != null)
+        {
+            return (uint)elements.IndexOf(foundItem);
+        }
+        return 0;
     }
 }

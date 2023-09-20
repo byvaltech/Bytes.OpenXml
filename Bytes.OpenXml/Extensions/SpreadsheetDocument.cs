@@ -10,13 +10,12 @@ public static class SpreadsheetDocumentExtensions
     /// </summary>
     /// <param name="document">An instance of <see cref="SpreadsheetDocument"/>.</param>
     /// <param name="sheetName">Name of the sheet</param>
-    /// <returns></returns>
-    public static WorksheetPart GetWorksheetPartByName(this SpreadsheetDocument document, string sheetName)
+    public static WorksheetPart GetWorksheetPart(this SpreadsheetDocument document, string sheetName)
     {
         if (document == null)
         {
             throw new ArgumentNullException(nameof(document));
         }
-        return document.WorkbookPart.GetWorksheetPartByName(sheetName);
+        return document.WorkbookPart.GetWorksheetPart(sheetName);
     }
 }

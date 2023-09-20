@@ -1,5 +1,5 @@
 # Bytes.OpenXml
-Bytes OpenXml is a set of extension methods that ease handling Excel documents with OpenXML SDK
+Bytes OpenXml is a set of extension methods, collected from many stackoverflow answers, for handling Excel documents with OpenXML SDK.
 
 
 ## Documentation

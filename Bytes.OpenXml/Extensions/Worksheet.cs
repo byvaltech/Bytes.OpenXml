@@ -1,4 +1,6 @@
-﻿namespace Bytes.OpenXml.Extensions;
+﻿using System.Text.RegularExpressions;
+
+namespace Bytes.OpenXml.Extensions;
 
 /// <summary>
 /// Extensions for <see cref="Worksheet"/>
@@ -17,7 +19,13 @@ public static class WorksheetExtensions
             throw new ArgumentNullException(nameof(worksheet));
         }
 
-        return worksheet.GetFirstChild<SheetData>().Elements<Row>().First(r => r.RowIndex == rowIndex);
+        var rows = worksheet.GetFirstChild<SheetData>().Elements<Row>();
+
+        if (rows.Any())
+        {
+            return worksheet.GetFirstChild<SheetData>().Elements<Row>().FirstOrDefault(r => r.RowIndex == rowIndex);
+        }
+        return null;
     }
 
     /// <summary>
@@ -47,18 +55,26 @@ public static class WorksheetExtensions
     /// Find cells containing given text
     /// </summary>
     /// <param name="worksheet">An instance of <see cref="Worksheet"/></param>
+    /// <param name="workbookPart"></param>
     /// <param name="search">Text to search</param>
-    public static IList<(uint row, uint column)> FindCellsContaining(this Worksheet worksheet, string search)
+    public static IList<(uint row, uint column)> FindCellsContaining(this Worksheet worksheet, WorkbookPart workbookPart, string search)
     {
         var indexes = new List<(uint, uint)>();
 
-        if (worksheet != null)
+        if (worksheet != null && workbookPart != null)
         {
-            foreach (var row in worksheet.Descendants<Row>().ToList())
+            foreach (var row in worksheet.Descendants<Row>())
             {
-                foreach (var cell in row.Elements<Cell>().ToList())
+                foreach (var cell in row.Elements<Cell>())
                 {
-                    if (cell.InnerText.IndexOf(search, StringComparison.OrdinalIgnoreCase) > -1)
+                    var value = cell.InnerText;
+                    var stringTable = workbookPart.GetPartsOfType<SharedStringTablePart>().FirstOrDefault();
+                    var isInt = int.TryParse(value, out var valueno);
+                    if (isInt)
+                    {
+                        value = stringTable.SharedStringTable.ElementAt(valueno).InnerText;
+                    }
+                    if (value.IndexOf(search, StringComparison.OrdinalIgnoreCase) > -1)
                     {
                         indexes.Add((row.RowIndex.Value, cell.GetColumnIndex()));
                     }
@@ -136,5 +152,48 @@ public static class WorksheetExtensions
         }
 
         worksheet.WorksheetPart.RefreshPivotOnLoad(name);
+    }
+
+    /// <summary>
+    /// Remove a row at given position
+    /// </summary>
+    /// <param name="worksheet">An instance of <see cref="Worksheet"/></param>
+    /// <param name="rowIndex">Index of the row to remove</param>
+    /// <exception cref="ArgumentNullException"></exception>
+    public static void RemoveRowAt(this Worksheet worksheet, int rowIndex)
+    {
+        if (worksheet == null)
+        {
+            throw new ArgumentNullException(nameof(worksheet));
+        }
+        var rows = worksheet.GetFirstChild<SheetData>().Elements<Row>();
+
+        var matched = false;
+        foreach (var row in rows)
+        {
+            if (matched)
+            {
+                row.RowIndex.Value--;
+
+                IEnumerable<Cell> cells = row.Elements<Cell>().ToList();
+                if (cells != null)
+                {
+                    foreach (Cell cell in cells)
+                    {
+                        var cr = cell.CellReference.Value;
+
+                        int indexRow = Convert.ToInt32(Regex.Replace(cr, @"[^\d]+", "")) - 1;
+                        cr = Regex.Replace(cr, @"[\d-]", "");
+
+                        cell.CellReference.Value = $"{cr}{indexRow}";
+                    }
+                }
+            }
+            if (row.RowIndex == rowIndex)
+            {
+                matched = true;
+                row.Remove();
+            }
+        }
     }
 }
